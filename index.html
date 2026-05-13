@@ -874,8 +874,10 @@
 
     function checkInputs() {
 
-        const isValid = inputs.cls.value && inputs.group.value.trim() && inputs.name.value.trim();
-
+const isValid =
+    inputs.cls.value !== "" &&
+    inputs.group.value.trim().length > 0 &&
+    inputs.name.value.trim().length > 0;
         if (isValid) {
 
             btnStart.classList.remove('opacity-50', 'cursor-not-allowed', 'translate-y-1');
@@ -896,9 +898,11 @@
 
     }
 
-    Object.values(inputs).forEach(input => input.addEventListener('input', checkInputs));
+    inputs.cls.addEventListener('change', checkInputs);
 
-    inputs.cls.addEventListener('change', checkInputs); // select change event
+inputs.group.addEventListener('input', checkInputs);
+
+inputs.name.addEventListener('input', checkInputs);
 
 
 
