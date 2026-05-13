@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울랜드 과학 탐험대</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #fff1f2;
+            background-image: radial-gradient(#fecdd3 2px, transparent 2px);
+            background-size: 24px 24px;
+        }
+
+        .font-jua {
+            font-family: 'Jua', sans-serif;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .card-pop {
+            transition: transform 0.1s ease;
+        }
+
+        .card-pop:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+<div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl overflow-hidden">
+
+    <!-- 홈 화면 -->
+    <div id="screen-home" class="screen active p-6 flex-col justify-center bg-gradient-to-br from-pink-100 via-rose-50 to-white">
+
+        <div class="text-center mb-8">
+            <div class="text-7xl mb-4">🎢</div>
+
+            <div class="font-jua text-rose-500 text-lg bg-white px-4 py-2 rounded-full inline-block mb-4 shadow">
+                👩‍🔬 가은쌤의 과학수업
+            </div>
+
+            <h1 class="font-jua text-5xl text-rose-600 leading-tight mb-3">
+                서울랜드<br>과학 탐험대
+            </h1>
+
+            <p class="font-bold text-rose-500">
+                놀이기구 타고 도장 모으자!
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl shadow-lg border-2 border-rose-100 space-y-4">
+
+            <div>
+                <label class="block font-bold text-rose-500 mb-2">몇 반이야?</label>
+
+                <select id="input-cls"
+                    class="w-full border-2 border-rose-200 rounded-xl p-3 font-bold">
+
+                    <option value="">반을 선택해줘!</option>
+                    <option value="1반">1반</option>
+                    <option value="2반">2반</option>
+                    <option value="3반">3반</option>
+                    <option value="4반">4반</option>
+                    <option value="5반">5반</option>
+                    <option value="6반">6반</option>
+                    <option value="7반">7반</option>
+                    <option value="8반">8반</option>
+                    <option value="9반">9반</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-bold text-rose-500 mb-2">모둠 이름</label>
+
+                <input
+                    type="text"
+                    id="input-group"
+                    class="w-full border-2 border-rose-200 rounded-xl p-3 font-bold"
+                    placeholder="모둠 이름 입력"
+                >
+            </div>
+
+            <div>
+                <label class="block font-bold text-rose-500 mb-2">대표 이름</label>
+
+                <input
+                    type="text"
+                    id="input-name"
+                    class="w-full border-2 border-rose-200 rounded-xl p-3 font-bold"
+                    placeholder="이름 입력"
+                >
+            </div>
+        </div>
+
+        <button
+            id="btn-start"
+            disabled
+            class="mt-8 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-jua text-2xl py-4 rounded-2xl opacity-50 cursor-not-allowed"
+        >
+            탐험 시작하기! 🚀
+        </button>
+    </div>
+
+
+    <!-- 미션 맵 -->
+    <div id="screen-map" class="screen flex-col bg-slate-50 min-h-screen">
+
+        <div class="bg-gradient-to-r from-rose-500 to-pink-500 text-white p-5 rounded-b-3xl shadow-lg">
+
+            <div class="flex justify-between items-center mb-3">
+                <div>
+                    <div id="map-team-info" class="text-sm font-bold mb-1"></div>
+                    <h2 class="font-jua text-3xl">미션 지도 🗺️</h2>
+                </div>
+
+                <div class="bg-white text-rose-500 px-4 py-2 rounded-full font-jua text-2xl shadow">
+                    <span id="stamp-count">0</span>/9
+                </div>
+            </div>
+
+            <div class="bg-white/30 rounded-full h-3 overflow-hidden">
+                <div id="progress-bar" class="bg-yellow-300 h-3 rounded-full w-0 transition-all"></div>
+            </div>
+        </div>
+
+        <div class="p-4 flex-1">
+            <div id="mission-grid" class="grid grid-cols-3 gap-3"></div>
+        </div>
+    </div>
+
+
+    <!-- 미션 상세 -->
+    <div id="screen-detail" class="screen flex-col bg-slate-50 min-h-screen">
+
+        <div class="bg-white p-4 border-b flex items-center gap-3 sticky top-0">
+            <button id="btn-back" class="text-2xl">⬅️</button>
+
+            <div>
+                <div id="detail-tag" class="text-sm text-rose-500 font-bold"></div>
+                <h2 id="detail-title" class="font-jua text-2xl"></h2>
+            </div>
+        </div>
+
+        <div class="p-5 flex-1 overflow-y-auto pb-32">
+
+            <div class="bg-white rounded-2xl p-5 border-2 border-blue-200 mb-5 shadow-sm">
+                <h3 class="font-jua text-xl text-blue-600 mb-3">👀 관찰 미션</h3>
+                <p id="detail-observation" class="font-bold"></p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border-2 border-purple-200 mb-5 shadow-sm">
+                <h3 class="font-jua text-xl text-purple-600 mb-3">✍️ 답변 작성</h3>
+
+                <textarea
+                    id="detail-answer"
+                    class="w-full h-32 border-2 border-purple-100 rounded-xl p-4 resize-none"
+                    placeholder="관찰한 내용을 자유롭게 적어줘!"
+                ></textarea>
+
+                <div class="flex justify-between mt-2 text-sm">
+                    <span class="text-rose-500 font-bold">10자 이상 입력!</span>
+                    <span><span id="char-count">0</span>/10</span>
+                </div>
+            </div>
+
+            <button
+                id="btn-reveal"
+                disabled
+                class="w-full bg-slate-200 text-slate-500 py-4 rounded-2xl font-bold mb-5"
+            >
+                🔒 답변을 10자 이상 쓰면 열려요
+            </button>
+
+            <div id="detail-explanation-box" class="hidden bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-5">
+                <h3 class="font-jua text-xl text-indigo-600 mb-3">💡 과학 개념</h3>
+
+                <p id="detail-explanation" class="leading-relaxed mb-4"></p>
+
+                <div id="detail-keywords" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t p-4">
+            <button
+                id="btn-stamp"
+                disabled
+                class="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white font-jua text-2xl py-4 rounded-2xl opacity-50"
+            >
+                🔖 도장 받기!
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+const MISSIONS = [
+    {
+        id: 0,
+        title: "블랙홀 2000",
+        tag: "에너지 전환",
+        icon: "🎢",
+        observation: "궤도 열차가 내려올 때 에너지 변화를 적어보자!",
+        explanation: "높은 곳의 위치에너지가 운동에너지로 바뀌며 속도가 빨라져.",
+        keywords: ["위치에너지", "운동에너지", "에너지 전환"]
+    },
+
+    {
+        id: 1,
+        title: "은하열차 888",
+        tag: "관성과 구심력",
+        icon: "🚀",
+        observation: "360도 회전할 때 떨어지지 않는 이유는?",
+        explanation: "빠른 속도와 구심력 때문에 좌석에 붙어 있게 돼.",
+        keywords: ["관성", "구심력"]
+    },
+
+    {
+        id: 2,
+        title: "킹바이킹",
+        tag: "진자 운동",
+        icon: "⚓",
+        observation: "왕복 시간을 관찰해보자!",
+        explanation: "진자는 일정한 주기로 반복 운동을 해.",
+        keywords: ["진자운동", "주기"]
+    }
+];
+
+
+let appState = {
+    cls: "",
+    group: "",
+    name: "",
+    stamps: {}
+};
+
+let currentMissionId = null;
+
+
+const screens = {
+    home: document.getElementById('screen-home'),
+    map: document.getElementById('screen-map'),
+    detail: document.getElementById('screen-detail')
+};
+
+
+const inputs = {
+    cls: document.getElementById('input-cls'),
+    group: document.getElementById('input-group'),
+    name: document.getElementById('input-name')
+};
+
+
+const btnStart = document.getElementById('btn-start');
+const mapGrid = document.getElementById('mission-grid');
+const stampCountEl = document.getElementById('stamp-count');
+const progressBar = document.getElementById('progress-bar');
+const mapTeamInfo = document.getElementById('map-team-info');
+
+const detailEls = {
+    title: document.getElementById('detail-title'),
+    tag: document.getElementById('detail-tag'),
+    observation: document.getElementById('detail-observation'),
+    answer: document.getElementById('detail-answer'),
+    charCount: document.getElementById('char-count'),
+    btnReveal: document.getElementById('btn-reveal'),
+    expBox: document.getElementById('detail-explanation-box'),
+    expText: document.getElementById('detail-explanation'),
+    keywords: document.getElementById('detail-keywords'),
+    btnStamp: document.getElementById('btn-stamp')
+};
+
+
+function showScreen(name) {
+    Object.values(screens).forEach(screen => {
+        screen.classList.remove('active');
+    });
+
+    screens[name].classList.add('active');
+}
+
+
+function checkInputs() {
+
+    const isValid =
+        inputs.cls.value !== '' &&
+        inputs.group.value.trim().length > 0 &&
+        inputs.name.value.trim().length > 0;
+
+
+    if (isValid) {
+        btnStart.disabled = false;
+
+        btnStart.classList.remove(
+            'opacity-50',
+            'cursor-not-allowed'
+        );
+
+    } else {
+
+        btnStart.disabled = true;
+
+        btnStart.classList.add(
+            'opacity-50',
+            'cursor-not-allowed'
+        );
+    }
+}
+
+
+inputs.cls.addEventListener('change', checkInputs);
+inputs.group.addEventListener('input', checkInputs);
+inputs.name.addEventListener('input', checkInputs);
+
+
+btnStart.addEventListener('click', () => {
+
+    appState.cls = inputs.cls.value;
+    appState.group = inputs.group.value;
+    appState.name = inputs.name.value;
+
+    renderMap();
+    showScreen('map');
+});
+
+
+function renderMap() {
+
+    mapTeamInfo.textContent = `${appState.cls} | ${appState.group}`;
+
+    const stampCount = Object.keys(appState.stamps).length;
+
+    stampCountEl.textContent = stampCount;
+
+    progressBar.style.width = `${(stampCount / MISSIONS.length) * 100}%`;
+
+
+    mapGrid.innerHTML = '';
+
+
+    MISSIONS.forEach(mission => {
+
+        const done = appState.stamps[mission.id];
+
+        const button = document.createElement('button');
+
+        button.className = `
+            aspect-square
+            rounded-2xl
+            bg-white
+            border-2
+            p-2
+            shadow
+            card-pop
+            relative
+            ${done ? 'border-rose-400 bg-rose-50' : 'border-slate-200'}
+        `;
+
+
+        button.innerHTML = `
+            <div class="text-4xl mb-2">${mission.icon}</div>
+            <div class="font-jua text-sm">${mission.title}</div>
+            ${done ? '<div class="absolute inset-0 flex items-center justify-center text-6xl">🔖</div>' : ''}
+        `;
+
+
+        button.addEventListener('click', () => {
+            openMission(mission.id);
+        });
+
+
+        mapGrid.appendChild(button);
+    });
+}
+
+
+function openMission(id) {
+
+    currentMissionId = id;
+
+    const mission = MISSIONS.find(m => m.id === id);
+
+
+    detailEls.title.textContent = mission.title;
+    detailEls.tag.textContent = mission.tag;
+    detailEls.observation.textContent = mission.observation;
+    detailEls.expText.textContent = mission.explanation;
+
+
+    detailEls.answer.value = '';
+    detailEls.charCount.textContent = '0';
+
+
+    detailEls.expBox.classList.add('hidden');
+
+
+    detailEls.keywords.innerHTML = mission.keywords.map(keyword => `
+        <span class="px-3 py-1 bg-white border border-indigo-200 rounded-full text-sm font-bold text-indigo-600">
+            #${keyword}
+        </span>
+    `).join('');
+
+
+    detailEls.btnReveal.disabled = true;
+    detailEls.btnReveal.className = 'w-full bg-slate-200 text-slate-500 py-4 rounded-2xl font-bold mb-5';
+
+
+    detailEls.btnStamp.disabled = true;
+    detailEls.btnStamp.classList.add('opacity-50');
+
+
+    showScreen('detail');
+}
+
+
+// 답변 입력
+
+detailEls.answer.addEventListener('input', () => {
+
+    const text = detailEls.answer.value;
+
+    detailEls.charCount.textContent = text.length;
+
+
+    if (text.length >= 10) {
+
+        detailEls.btnReveal.disabled = false;
+
+        detailEls.btnReveal.className = 'w-full bg-indigo-500 text-white py-4 rounded-2xl font-bold mb-5';
+
+    } else {
+
+        detailEls.btnReveal.disabled = true;
+
+        detailEls.btnReveal.className = 'w-full bg-slate-200 text-slate-500 py-4 rounded-2xl font-bold mb-5';
+    }
+});
+
+
+// 과학 개념 열기
+
+detailEls.btnReveal.addEventListener('click', () => {
+
+    detailEls.expBox.classList.remove('hidden');
+
+    detailEls.btnStamp.disabled = false;
+
+    detailEls.btnStamp.classList.remove('opacity-50');
+});
+
+
+// 도장 받기
+
+detailEls.btnStamp.addEventListener('click', () => {
+
+    appState.stamps[currentMissionId] = true;
+
+    alert('🔖 도장을 획득했어!');
+
+    renderMap();
+
+    showScreen('map');
+});
+
+
+// 뒤로가기
+
+document.getElementById('btn-back').addEventListener('click', () => {
+    showScreen('map');
+});
+
+</script>
+
+</body>
+</html>
