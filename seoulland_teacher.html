@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울랜드 과학 탐험대 - 교사 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            background-color: #f8fafc; 
+        }
+        .font-jua { font-family: 'Jua', sans-serif; }
+        .screen { display: none !important; min-height: 100vh; }
+        .screen.active { display: flex !important; flex-direction: column; }
+        
+        .progress-bar-striped {
+            background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+            background-size: 1rem 1rem;
+        }
+        .live-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- 로그인 화면 -->
+    <div id="screen-login" class="screen active items-center justify-center p-4 bg-[#fff1f2] bg-[radial-gradient(#fecdd3_2px,transparent_2px)] bg-[size:24px_24px]">
+        <div class="bg-white/95 backdrop-blur-sm p-10 rounded-[2rem] shadow-2xl max-w-sm w-full text-center border-4 border-rose-100">
+            <div class="text-6xl mb-4 animate-bounce">👨‍🏫</div>
+            <h1 class="font-jua text-4xl text-rose-600 mb-2">교사 대시보드</h1>
+            <p class="text-slate-500 font-bold mb-8">아이들의 탐험을 지켜보세요!</p>
+            
+            <input type="password" id="input-pw" class="w-full px-5 py-4 rounded-xl border-2 border-slate-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-100 outline-none transition mb-6 text-center font-bold text-lg" placeholder="접속 비밀번호">
+            <button id="btn-login" class="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white font-jua text-2xl py-4 rounded-xl shadow-[0_6px_0_#be123c] active:translate-y-[6px] active:shadow-none transition-all">접속하기</button>
+            <p id="login-error" class="text-rose-500 font-bold text-sm mt-4 hidden">비밀번호가 일치하지 않습니다.</p>
+        </div>
+    </div>
+
+    <!-- 대시보드 화면 -->
+    <div id="screen-dashboard" class="screen">
+        <!-- 상단 네비게이션 -->
+        <nav class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 sticky top-0 z-20 shadow-lg border-b-4 border-rose-500">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🎢</span>
+                    <h1 class="font-jua text-2xl tracking-wide">서울랜드 과학 탐험대 현황판</h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm font-bold bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
+                    <div class="w-3 h-3 bg-red-500 rounded-full live-indicator"></div>
+                    <span class="text-slate-200">실시간 연동 중 (자동 갱신)</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl mx-auto p-4 py-8 space-y-8 w-full flex-1">
+            
+            <!-- 연결 상태 경고창 -->
+            <div id="db-warning" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm">
+                <div class="flex">
+                    <div class="flex-shrink-0">⚠️</div>
+                    <div class="ml-3">
+                        <p class="text-sm text-amber-700 font-bold">
+                            클라우드 DB에 연결되지 않았습니다. 현재 로컬 테스트 데이터만 표시됩니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 요약 카드 -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-6xl opacity-10">👥</div>
+                    <p class="text-slate-500 text-sm font-bold mb-1">참여 중인 모둠</p>
+                    <p class="text-4xl font-black text-slate-800"><span id="stat-groups">0</span><span class="text-lg text-slate-400 ml-1 font-bold">팀</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-6xl opacity-10">🔖</div>
+                    <p class="text-slate-500 text-sm font-bold mb-1">찍힌 도장 총합</p>
+                    <p class="text-4xl font-black text-rose-600"><span id="stat-missions">0</span><span class="text-lg text-slate-400 ml-1 font-bold">개</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-6xl opacity-10">🍿</div>
+                    <p class="text-slate-500 text-sm font-bold mb-1">교환권 획득 (5개+)</p>
+                    <p class="text-4xl font-black text-amber-500"><span id="stat-amulets">0</span><span class="text-lg text-slate-400 ml-1 font-bold">팀</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-6xl opacity-10">🚀</div>
+                    <p class="text-slate-500 text-sm font-bold mb-1">팀당 평균 달성률</p>
+                    <p class="text-4xl font-black text-purple-600"><span id="stat-avg">0.0</span><span class="text-lg text-slate-400 ml-1 font-bold">개</span></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- 미션별 현황 (좌측 1칸) -->
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 lg:col-span-1 h-fit">
+                    <h2 class="font-jua text-2xl text-slate-800 mb-6 flex items-center gap-2">📊 미션별 진행률</h2>
+                    <div class="space-y-5" id="mission-stats-container">
+                        <!-- JS 렌더링 -->
+                    </div>
+                </div>
+
+                <!-- 모둠별 리스트 (우측 2칸) -->
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 lg:col-span-2">
+                    <div class="flex justify-between items-end mb-6">
+                        <h2 class="font-jua text-2xl text-slate-800 flex items-center gap-2">🏃‍♂️ 우리반 탐험대 현황</h2>
+                        <span class="text-sm font-bold text-rose-500 bg-rose-50 px-3 py-1 rounded-full">도장 많은 순 🏆</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="team-list-container">
+                        <!-- JS 렌더링 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // 미션 메타데이터
+    const MISSIONS = [
+        "블랙홀 2000", "은하열차 888", "킹바이킹", 
+        "급류타기", "샷드롭", "엑스플라이어", 
+        "앨리스 원더하우스", "쥬라기랜드", "기상 관측가"
+    ];
+
+    // UI 제어
+    const screenLogin = document.getElementById('screen-login');
+    const screenDash = document.getElementById('screen-dashboard');
+    let db, auth, appId;
+
+    // 1. Firebase 초기화
+    try {
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        if (firebaseConfig && Object.keys(firebaseConfig).length > 0) {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            appId = typeof __app_id !== 'undefined' ? __app_id : 'seoulland-app';
+            
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            };
+            initAuth();
+        } else {
+            document.getElementById('db-warning').classList.remove('hidden');
+        }
+    } catch(e) { console.error("Firebase Init Error", e); }
+
+    // 2. 로그인 이벤트
+    document.getElementById('btn-login').addEventListener('click', () => {
+        const pw = document.getElementById('input-pw').value;
+        if (pw === 'science2025') {
+            screenLogin.classList.remove('active');
+            screenDash.classList.add('active');
+            
+            // Firebase가 켜져있으면 실시간 구독 시작
+            if (auth) {
+                onAuthStateChanged(auth, (user) => {
+                    if (user) startRealtimeSync();
+                });
+            } else {
+                // 로컬 폴백 모드 (테스트용)
+                renderDashboard(loadFallbackData());
+            }
+        } else {
+            document.getElementById('login-error').classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('input-pw').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') document.getElementById('btn-login').click();
+    });
+
+    // 3. 실시간 동기화 (Firestore onSnapshot)
+    function startRealtimeSync() {
+        if (!db) return;
+        const q = collection(db, 'artifacts', appId, 'public', 'data', 'groups');
+        
+        onSnapshot(q, (snapshot) => {
+            const groups = [];
+            snapshot.forEach((doc) => {
+                groups.push(doc.data());
+            });
+            renderDashboard(groups);
+        }, (error) => {
+            console.error("Firestore 실시간 수신 에러:", error);
+        });
+    }
+
+    // 로컬 폴백 데이터 불러오기 (Firebase 없을 때)
+    function loadFallbackData() {
+        const groups = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('group_')) {
+                try { groups.push(JSON.parse(localStorage.getItem(key))); } catch(e){}
+            }
+        }
+        return groups;
+    }
+
+    // 4. 대시보드 화면 렌더링
+    function renderDashboard(groups) {
+        let totalStamps = 0;
+        let amuletCount = 0;
+        let missionCounts = new Array(9).fill(0);
+
+        // 통계 수집
+        groups.forEach(g => {
+            const stamps = g.stamps || {};
+            const keys = Object.keys(stamps);
+            const count = keys.length;
+            
+            totalStamps += count;
+            if (count >= 5) amuletCount++;
+            
+            keys.forEach(k => {
+                const id = parseInt(k);
+                if(!isNaN(id) && id >= 0 && id < 9) missionCounts[id]++;
+            });
+        });
+
+        const groupCount = groups.length;
+        const avg = groupCount > 0 ? (totalStamps / groupCount).toFixed(1) : "0.0";
+
+        // 요약 업데이트
+        document.getElementById('stat-groups').textContent = groupCount;
+        document.getElementById('stat-missions').textContent = totalStamps;
+        document.getElementById('stat-amulets').textContent = amuletCount;
+        document.getElementById('stat-avg').textContent = avg;
+
+        // 미션별 막대 업데이트
+        const missionContainer = document.getElementById('mission-stats-container');
+        missionContainer.innerHTML = '';
+        MISSIONS.forEach((name, i) => {
+            const count = missionCounts[i];
+            const percent = groupCount > 0 ? Math.round((count / groupCount) * 100) : 0;
+            
+            missionContainer.innerHTML += `
+                <div>
+                    <div class="flex justify-between text-sm mb-1.5">
+                        <span class="font-bold text-slate-700">${i+1}. ${name}</span>
+                        <span class="font-bold text-rose-500">${count}팀 <span class="text-xs text-slate-400">(${percent}%)</span></span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
+                        <div class="bg-gradient-to-r from-rose-400 to-pink-500 h-3 rounded-full progress-bar-striped transition-all duration-700" style="width: ${percent}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // 모둠 리스트 업데이트
+        const teamContainer = document.getElementById('team-list-container');
+        teamContainer.innerHTML = '';
+        
+        // 정렬 (도장 많은 순, 같으면 최근 업데이트 순)
+        groups.sort((a, b) => {
+            const aCount = Object.keys(a.stamps||{}).length;
+            const bCount = Object.keys(b.stamps||{}).length;
+            if (aCount !== bCount) return bCount - aCount;
+            return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
+        });
+
+        if(groups.length === 0) {
+            teamContainer.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-bold">아직 탐험을 시작한 모둠이 없습니다. 👀</div>';
+        }
+
+        groups.forEach(g => {
+            const stamps = g.stamps || {};
+            const stampCount = Object.keys(stamps).length;
+            const isAmulet = stampCount >= 5;
+            const isAllClear = stampCount === 9;
+            
+            // 9칸 미션 그리드
+            let gridHtml = '';
+            for(let i=0; i<9; i++) {
+                const done = stamps[i];
+                gridHtml += `<div class="aspect-square rounded-md flex items-center justify-center text-xs shadow-sm ${done ? 'bg-rose-500 text-white font-bold' : 'bg-slate-100 text-slate-300'}">${i+1}</div>`;
+            }
+
+            const timeStr = g.updatedAt ? new Date(g.updatedAt).toLocaleTimeString('ko-KR', {hour: '2-digit', minute:'2-digit'}) : '-';
+
+            // 답변 렌더링 로직 추가
+            let answersHtml = '';
+            if (g.answers && Object.keys(g.answers).length > 0) {
+                answersHtml += '<div class="mt-4 border-t-2 border-slate-100 pt-3 space-y-2 max-h-48 overflow-y-auto">';
+                answersHtml += '<p class="text-xs font-bold text-slate-500 mb-2 sticky top-0 bg-white/90 py-1 z-10">📝 학생 관찰 기록</p>';
+                for (const [mId, ans] of Object.entries(g.answers)) {
+                    const missionName = MISSIONS[parseInt(mId)];
+                    if (ans.trim().length > 0) {
+                        answersHtml += `
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <p class="text-[11px] font-black text-rose-500 mb-1">${missionName}</p>
+                                <p class="text-sm text-slate-700 font-bold break-words">${ans}</p>
+                            </div>
+                        `;
+                    }
+                }
+                answersHtml += '</div>';
+            }
+
+            teamContainer.innerHTML += `
+                <div class="p-5 rounded-2xl border-2 ${isAmulet ? 'border-amber-400 bg-amber-50/20' : 'border-slate-100 bg-white'} relative transition hover:shadow-md flex flex-col h-full">
+                    ${isAllClear ? '<div class="absolute -top-3 -right-3 text-4xl drop-shadow-md animate-bounce">👑</div>' : isAmulet ? '<div class="absolute -top-3 -right-3 text-3xl drop-shadow-md">🍿</div>' : ''}
+                    
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded block mb-1 w-max">${g.cls}</span>
+                            <h3 class="font-jua text-2xl text-slate-800 leading-tight">${g.group}</h3>
+                            <span class="text-sm font-bold text-slate-500">기록자: ${g.name}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block px-3 py-1.5 rounded-lg text-sm font-black border-2 ${isAmulet ? 'text-amber-700 bg-amber-100 border-amber-300' : 'text-slate-600 bg-slate-50 border-slate-200'}">
+                                🔖 ${stampCount} / 9
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-9 gap-1.5 mb-3">
+                        ${gridHtml}
+                    </div>
+                    
+                    ${answersHtml}
+                    
+                    <div class="text-[11px] font-bold text-right text-slate-400 border-t border-slate-100 pt-3 mt-auto">
+                        최근 활동: ${timeStr}
+                    </div>
+                </div>
+            `;
+        });
+    }
+</script>
+</body>
+</html>

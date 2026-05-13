@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>서울랜드 과학 탐험대</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        body { 
+
+            font-family: 'Noto Sans KR', sans-serif; 
+
+            /* 놀이공원 느낌의 도트 배경 */
+
+            background-color: #fff1f2; 
+
+            background-image: radial-gradient(#fecdd3 2px, transparent 2px);
+
+            background-size: 24px 24px;
+
+            user-select: none; 
+
+        }
+
+        .font-jua { font-family: 'Jua', sans-serif; }
+
+        .screen { display: none !important; min-height: 100vh; }
+
+        .screen.active { display: flex !important; }
+
+        
+
+        /* 커스텀 스크롤바 */
+
+        ::-webkit-scrollbar { width: 6px; }
+
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        ::-webkit-scrollbar-thumb { background: #fda4af; border-radius: 3px; }
+
+        
+
+        .card-pop { transition: transform 0.1s ease, box-shadow 0.1s ease; }
+
+        .card-pop:active { transform: scale(0.95); box-shadow: none; }
+
+        
+
+        /* 팡 터지는 애니메이션 */
+
+        @keyframes pop {
+
+            0% { transform: scale(0.5); opacity: 0; }
+
+            70% { transform: scale(1.1); opacity: 1; }
+
+            100% { transform: scale(1); opacity: 1; }
+
+        }
+
+        .animate-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        
+
+        /* 둥둥 떠다니는 애니메이션 */
+
+        @keyframes float {
+
+            0%, 100% { transform: translateY(0); }
+
+            50% { transform: translateY(-8px); }
+
+        }
+
+        .animate-float { animation: float 3s ease-in-out infinite; }
+
+
+
+        /* 놀이공원 간판 스타일 텍스트 */
+
+        .text-glow-pink {
+
+            color: #ffffff;
+
+            text-shadow: 0 2px 4px rgba(225, 29, 72, 0.4), 0 6px 15px rgba(244, 63, 94, 0.7), 0 10px 25px rgba(251, 113, 133, 0.5);
+
+        }
+
+    </style>
+
+</head>
+
+<body class="text-slate-800">
+
+
+
+<div id="app" class="max-w-md mx-auto bg-white/95 backdrop-blur-md min-h-screen relative shadow-2xl overflow-x-hidden border-x-4 border-white">
+
+
+
+    <!-- 1. 홈 화면 -->
+
+    <div id="screen-home" class="screen active p-6 flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-pink-100 via-rose-50 to-white">
+
+        <!-- 배경 장식 -->
+
+        <div class="absolute top-10 left-4 text-4xl opacity-50 animate-float" style="animation-delay: 0s;">🎈</div>
+
+        <div class="absolute top-20 right-6 text-4xl opacity-50 animate-float" style="animation-delay: 1s;">🎪</div>
+
+        <div class="absolute bottom-32 left-8 text-4xl opacity-50 animate-float" style="animation-delay: 0.5s;">🍿</div>
+
+
+
+        <div class="text-center mb-8 relative z-10">
+
+            <span class="text-7xl mb-4 block animate-bounce">🎢</span>
+
+            <!-- 가은쌤의 과학수업 추가 -->
+
+            <span class="font-jua text-rose-500 text-lg bg-white/90 px-4 py-1.5 rounded-full shadow-sm mb-3 inline-block border border-rose-100">👩‍🔬 가은쌤의 과학수업</span>
+
+            <h1 class="font-jua text-5xl text-white text-glow-pink mb-3 leading-tight tracking-wide">서울랜드<br>과학 탐험대</h1>
+
+            <p class="text-rose-500 font-bold bg-white/80 inline-block px-4 py-1.5 rounded-full shadow-sm">놀이기구 타고 도장 모으자!</p>
+
+        </div>
+
+
+
+        <!-- 학생용 활용 가이드 추가 -->
+
+        <div class="w-full bg-white/90 p-5 rounded-3xl border-2 border-rose-200 shadow-md relative z-10 mb-5 backdrop-blur-sm text-left">
+
+            <h3 class="font-jua text-xl text-rose-600 mb-3 flex items-center gap-1">
+
+                <span>💡</span> 탐험 가이드
+
+            </h3>
+
+            <ul class="text-sm font-bold text-slate-700 space-y-2.5 ml-1">
+
+                <li class="flex gap-2 items-start">
+
+                    <span class="text-base leading-none mt-0.5">1️⃣</span> 
+
+                    <span>어트랙션을 타고 <strong>관찰한 내용</strong>을 적어줘! <span class="text-rose-500">(10자 이상)</span></span>
+
+                </li>
+
+                <li class="flex gap-2 items-start">
+
+                    <span class="text-base leading-none mt-0.5">2️⃣</span> 
+
+                    <span>답변을 쓰면 열리는 <strong>과학 개념</strong>을 확인하고 도장 꾹!</span>
+
+                </li>
+
+                <li class="flex gap-2 items-start">
+
+                    <span class="text-base leading-none mt-0.5">3️⃣</span> 
+
+                    <span>도장 <strong>5개</strong>를 모으면 <strong>간식 교환권</strong>이 펑! 🍿</span>
+
+                </li>
+
+                <li class="flex gap-2 items-start">
+
+                    <span class="text-base leading-none mt-0.5">🔄</span> 
+
+                    <span>실수로 창이 꺼져도 <strong>같은 반/이름</strong>을 쓰면 이어서 할 수 있어!</span>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+
+
+        <div class="w-full space-y-4 bg-white/80 p-6 rounded-3xl border-4 border-rose-100 shadow-xl relative z-10 backdrop-blur-sm">
+
+            <div>
+
+                <label class="block text-sm font-bold text-rose-600 mb-1">몇 반이야? 👀</label>
+
+                <!-- 텍스트 입력에서 select 드롭다운으로 변경 -->
+
+                <div class="relative">
+
+                    <select id="input-cls" class="w-full px-4 py-3 rounded-xl border-2 border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-100 outline-none transition appearance-none bg-white font-bold text-slate-700 cursor-pointer">
+
+                        <option value="" disabled selected>반을 선택해줘! ▼</option>
+
+                        <option value="1반">1반</option>
+
+                        <option value="2반">2반</option>
+
+                        <option value="3반">3반</option>
+
+                        <option value="4반">4반</option>
+
+                        <option value="5반">5반</option>
+
+                        <option value="6반">6반</option>
+
+                        <option value="7반">7반</option>
+
+                        <option value="8반">8반</option>
+
+                        <option value="9반">9반</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div>
+
+                <label class="block text-sm font-bold text-rose-600 mb-1">모둠 이름 ⚡</label>
+
+                <input type="text" id="input-group" class="w-full px-4 py-3 rounded-xl border-2 border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-100 outline-none transition font-bold text-slate-700" placeholder="멋진 모둠 이름을 지어봐!">
+
+            </div>
+
+            <div>
+
+                <label class="block text-sm font-bold text-rose-600 mb-1">기록 대표자 이름 ✍️</label>
+
+                <input type="text" id="input-name" class="w-full px-4 py-3 rounded-xl border-2 border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-100 outline-none transition font-bold text-slate-700" placeholder="네 이름을 적어줘">
+
+            </div>
+
+        </div>
+
+
+
+        <button id="btn-start" class="mt-8 w-full bg-gradient-to-r from-rose-500 to-purple-600 text-white font-jua text-2xl py-4 rounded-2xl shadow-[0_8px_0_#9f1239] opacity-50 cursor-not-allowed transition-all relative z-10" disabled>
+
+            탐험 시작하기! 🚀
+
+        </button>
+
+    </div>
+
+
+
+    <!-- 2. 미션 맵 화면 -->
+
+    <div id="screen-map" class="screen bg-slate-50 flex-col h-screen overflow-hidden">
+
+        <!-- 헤더 -->
+
+        <div class="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 text-white p-5 rounded-b-[2.5rem] shadow-lg z-10 sticky top-0 border-b-4 border-pink-700/30 flex-shrink-0">
+
+            <div class="flex justify-between items-end mb-3">
+
+                <div>
+
+                    <p class="bg-white/20 px-2 py-0.5 rounded-md text-white text-[11px] font-bold inline-block mb-1 shadow-sm" id="map-team-info">1반 | 번개모둠</p>
+
+                    <h2 class="font-jua text-3xl mt-1 text-white drop-shadow-md">미션 지도 🗺️</h2>
+
+                </div>
+
+                <div class="bg-white px-4 py-2 rounded-full shadow-md text-rose-600 flex items-center gap-1 border-2 border-rose-100">
+
+                    <span class="text-xl">🔖</span>
+
+                    <span class="font-jua text-2xl"><span id="stamp-count">0</span>/9</span>
+
+                </div>
+
+            </div>
+
+            <!-- 프로그레스 바 -->
+
+            <div class="w-full bg-black/20 rounded-full h-3 mt-3 overflow-hidden shadow-inner">
+
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-300 to-yellow-500 h-3 rounded-full transition-all duration-700 w-0 relative">
+
+                    <div class="absolute inset-0 bg-white/20 w-full h-full" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.3) 10px, rgba(255,255,255,0.3) 20px);"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 3x3 그리드 영역 -->
+
+        <div class="p-4 flex-1 overflow-y-auto">
+
+            <div id="mission-grid" class="grid grid-cols-3 gap-3 w-full max-w-[400px] mx-auto">
+
+                <!-- JS로 렌더링됨 -->
+
+            </div>
+
+        </div>
+
+        
+
+        <div class="p-4 pt-0 flex-shrink-0">
+
+             <button id="btn-view-amulet" class="hidden w-full bg-gradient-to-r from-amber-400 to-yellow-500 text-amber-900 font-jua text-xl py-4 rounded-2xl shadow-[0_6px_0_#b45309] border-2 border-amber-200 card-pop flex items-center justify-center gap-2">
+
+                🌟 부적 & 간식교환권 보기 🍿
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- 3. 미션 상세 화면 -->
+
+    <div id="screen-detail" class="screen flex flex-col bg-white">
+
+        <!-- 헤더 -->
+
+        <div class="flex items-center p-4 border-b-2 border-rose-100 sticky top-0 bg-white z-10 shadow-sm">
+
+            <button id="btn-back" class="p-2 -ml-2 text-rose-500 hover:bg-rose-50 rounded-full transition">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+
+            </button>
+
+            <div class="ml-2">
+
+                <span id="detail-tag" class="text-[11px] font-bold px-2.5 py-0.5 bg-rose-100 text-rose-600 rounded-md">태그</span>
+
+                <h2 id="detail-title" class="font-jua text-2xl mt-1 text-slate-800">미션 이름</h2>
+
+            </div>
+
+            <div class="ml-auto text-4xl animate-float" id="detail-icon">🎢</div>
+
+        </div>
+
+
+
+        <div class="p-5 flex-1 overflow-y-auto pb-28 bg-slate-50">
+
+            <!-- 관찰 미션 -->
+
+            <div class="mb-6 bg-white border-2 border-blue-200 p-5 rounded-2xl shadow-sm relative mt-2">
+
+                <div class="absolute -top-4 left-4 bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+
+                    <span>👀</span> 관찰 미션
+
+                </div>
+
+                <p id="detail-observation" class="mt-2 text-slate-700 leading-relaxed font-bold text-lg">관찰 내용</p>
+
+            </div>
+
+
+
+            <!-- 탐구 질문 -->
+
+            <div class="mb-6 relative bg-white p-5 rounded-2xl border-2 border-purple-200 shadow-sm">
+
+                <h3 class="font-jua text-xl text-purple-700 mb-2 flex items-center gap-1">
+
+                    <span>🤔</span> 탐구 질문
+
+                </h3>
+
+                <p id="detail-question" class="text-slate-700 font-medium mb-3">질문 내용</p>
+
+                <textarea id="detail-answer" class="w-full h-32 p-4 bg-purple-50/50 border-2 border-purple-100 rounded-xl resize-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition outline-none font-medium text-slate-800" placeholder="여기에 답변을 적어줘!"></textarea>
+
+                <div class="flex justify-between items-center mt-2">
+
+                    <span class="text-xs font-bold text-rose-500 bg-rose-50 px-2 py-1 rounded-md">최소 10자 이상 써주세요!</span>
+
+                    <p class="text-right text-sm text-slate-400 font-bold"><span id="char-count">0</span> / 10자</p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 과학 개념 확인 버튼 -->
+
+            <button id="btn-reveal" class="w-full py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl mb-6 flex justify-center items-center gap-2 transition disabled:opacity-50 border-2 border-slate-200 text-lg">
+
+                🔒 답변을 10자 이상 쓰면 열려요
+
+            </button>
+
+
+
+            <!-- 과학 개념 (숨김) -->
+
+            <div id="detail-explanation-box" class="hidden mb-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 p-6 rounded-2xl shadow-sm">
+
+                <h3 class="font-jua text-xl text-indigo-700 mb-2 flex items-center gap-1">
+
+                    <span>💡</span> 과학적으로 보면...
+
+                </h3>
+
+                <p id="detail-explanation" class="text-slate-800 font-medium leading-relaxed mb-4">설명</p>
+
+                <div id="detail-keywords" class="flex flex-wrap gap-2 mt-4 pt-4 border-t-2 border-indigo-100">
+
+                    <!-- 키워드 배지 -->
+
+                </div>
+
+            </div>
+
+            
+
+            <div id="completed-banner" class="hidden bg-emerald-100 text-emerald-700 p-4 rounded-2xl text-center font-bold text-lg mb-4 border-2 border-emerald-200 shadow-sm flex justify-center items-center gap-2">
+
+                <span>✅</span> 이미 도장을 받은 미션이야!
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 하단 고정 버튼 -->
+
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white border-t-2 border-slate-100 pb-6 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+
+            <button id="btn-stamp" class="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white font-jua text-2xl py-4 rounded-2xl shadow-[0_6px_0_#be123c] opacity-50 cursor-not-allowed transition flex justify-center items-center gap-2" disabled>
+
+                🔖 도장 받기!
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- 4. 행운부적 화면 (간식 교환권 포함) -->
+
+    <div id="screen-amulet" class="screen bg-slate-900 flex flex-col items-center justify-start pt-10 pb-20 px-6 relative overflow-y-auto">
+
+        <!-- 배경 반짝이 및 폭죽 효과 -->
+
+        <div class="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+
+        
+
+        <h2 class="font-jua text-amber-300 text-4xl mb-6 z-10 text-center animate-bounce drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
+
+            🎉 축하해! 🎉<br>임무 완수!
+
+        </h2>
+
+        
+
+        <!-- 부적 디자인 -->
+
+        <div class="bg-[#FFF9E6] w-full max-w-[320px] rounded-sm shadow-2xl relative z-10 overflow-hidden transform rotate-1 mb-8 border-4 border-red-600/20">
+
+            <div class="absolute inset-2 border-2 border-red-500 rounded-sm"></div>
+
+            <div class="p-8 text-center relative flex flex-col items-center">
+
+                <div class="text-red-600 font-jua text-4xl mb-4 border-b-2 border-red-500/30 pb-2 inline-block tracking-widest">소수정예<br>행운부적</div>
+
+                
+
+                <div class="text-slate-800 mt-4 space-y-2">
+
+                    <p class="text-sm font-bold text-slate-600 leading-relaxed">위 탐험대는 뛰어난 관찰력으로<br>과학의 비밀을 파헤쳤기에<br>이 부적을 내립니다.</p>
+
+                    <div class="bg-red-50 p-4 rounded-lg mt-5 border border-red-200 w-full text-left shadow-inner">
+
+                        <p class="text-xs text-red-500 font-bold mb-1">소속</p>
+
+                        <p class="font-jua text-2xl text-red-900" id="amulet-cls">1반</p>
+
+                        <p class="font-jua text-2xl text-red-900" id="amulet-group">번개모둠</p>
+
+                        <div class="mt-3 flex justify-between items-end border-t border-red-200/50 pt-3">
+
+                            <div>
+
+                                <p class="text-xs text-red-500 font-bold mb-1">대표</p>
+
+                                <p class="font-jua text-xl text-red-900" id="amulet-name">김가은</p>
+
+                            </div>
+
+                            <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white font-jua text-xl transform -rotate-12 shadow-md border-2 border-white">
+
+                                참 잘함
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 간식 교환권 (새로 추가됨!) -->
+
+        <div class="w-full max-w-[320px] bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl shadow-2xl relative z-10 overflow-hidden border-2 border-dashed border-white/50 card-pop">
+
+            <!-- 티켓 절취선 느낌 -->
+
+            <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-900 rounded-full"></div>
+
+            <div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-900 rounded-full"></div>
+
+            
+
+            <div class="p-6 flex items-center justify-between">
+
+                <div class="text-5xl animate-float">🍿</div>
+
+                <div class="text-right text-white pl-4">
+
+                    <div class="bg-white/20 text-xs font-bold px-2 py-1 rounded inline-block mb-1">Mission Clear!</div>
+
+                    <h3 class="font-jua text-3xl mb-1 text-yellow-300 drop-shadow-md">간식 교환권</h3>
+
+                    <p class="text-sm font-medium opacity-90">선생님께 보여주고<br>맛있는 간식을 받으세요!</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <button id="btn-back-to-map" class="mt-10 bg-white/20 backdrop-blur-md border-2 border-white/40 text-white px-8 py-4 rounded-full font-bold z-10 card-pop text-lg shadow-lg hover:bg-white/30 transition">
+
+            미션 지도 돌아가기 🗺️
+
+        </button>
+
+    </div>
+
+
+
+    <!-- 모달: 도장 획득 -->
+
+    <div id="modal-stamp" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+
+        <div class="bg-white rounded-[2rem] p-8 max-w-sm w-11/12 text-center transform scale-90 transition-transform duration-300 shadow-2xl border-4 border-rose-100" id="modal-stamp-content">
+
+            <div class="text-8xl mb-4 animate-pop drop-shadow-lg">🔖</div>
+
+            <h3 class="font-jua text-3xl text-rose-600 mb-2">도장 획득!</h3>
+
+            <p class="text-slate-600 mb-8 font-bold text-lg">멋진 관찰이야! <br>현재 도장 <span id="modal-stamp-count" class="font-black text-rose-600 text-2xl bg-rose-50 px-2 py-0.5 rounded-lg">3</span>개를 모았어.</p>
+
+            <button id="btn-modal-close" class="w-full bg-rose-500 text-white font-jua text-2xl py-4 rounded-2xl shadow-[0_6px_0_#be123c] card-pop active:shadow-none active:translate-y-[6px]">계속하기!</button>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+
+    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+
+
+    // --- 1. 미션 데이터 ---
+
+    const MISSIONS = [
+        { id: 0, title: "블랙홀 2000", tag: "에너지 전환", icon: "🎢", observation: "궤도 열차가 내려올 때 에너지 변화를 적어보자!", explanation: "높은 곳에 있는 물체는 아래로 내려올 수 있는 능력, 즉 '위치에너지'를 가지고 있어. 롤러코스터가 내려오면서 이 위치에너지가 빠르게 달리는 힘인 '운동에너지'로 바뀌는 거야. 그래서 가장 낮은 지점에서 속도가 제일 빨라. 모터 없이도 처음 높이 하나로 끝까지 달릴 수 있는 이유가 바로 이거야.", keywords: ["위치에너지", "운동에너지", "에너지 전환"] },
+        { id: 1, title: "은하열차 888", tag: "관성과 구심력", icon: "🚀", observation: "360도 회전할 때 떨어지지 않는 이유는?", explanation: "물체는 원래 하던 방향으로 계속 가려는 성질이 있는데, 이걸 '관성'이라고 해. 빠르게 달리는 열차 안의 내 몸도 앞으로 계속 나아가려 하는데, 루프에서는 그 힘이 나를 좌석(원의 중심 방향) 쪽으로 눌러줘. 이렇게 원을 그리며 돌 때 중심 방향으로 당기는 힘을 '구심력'이라고 해. 속도가 충분하면 이 구심력이 중력보다 커서 뒤집혀도 안 떨어지는 거야.", keywords: ["관성", "구심력"] },
+        { id: 2, title: "킹바이킹", tag: "진자 운동", icon: "⚓", observation: "왕복하는 데 걸리는 시간을 재보자!", explanation: "진자(줄에 매달려 흔들리는 물체)는 크게 흔들리든 작게 흔들리든 한 번 왕복하는 시간이 거의 같아. 이걸 '등시성'이라고 해. 왕복 시간은 줄의 길이에만 달려 있거든. 갈릴레오가 교회 천장 램프를 보고 발견한 이 원리로 나중에 진자시계가 만들어졌어. 바이킹에서 조용히 왕복 시간을 세어보면 처음이랑 끝이 비슷하다는 걸 느낄 수 있어!", keywords: ["진자운동", "주기", "등시성"] },
+        { id: 3, title: "급류타기", tag: "힘과 가속도", icon: "💦", observation: "보트가 물에 부딪힐 때 물이 튀는 이유는?", explanation: "움직이는 물체는 무거울수록, 빠를수록 충돌할 때 더 큰 힘을 만들어. 사람이 많이 탈수록 보트가 더 무거워지고, 무거울수록 더 빠르게 내려와. 그 보트가 물과 부딪힐 때 물을 더 세게 밀어내는 거야. 힘이 클수록 물도 더 멀리 튀는 건 당연하겠지? 앞자리에 앉을수록 물을 정면으로 맞는 이유도 같은 원리야.", keywords: ["중력", "무게", "힘"] },
+        { id: 4, title: "샷드롭", tag: "무중력 체험", icon: "🗼", observation: "몸이 붕 뜨는 순간의 느낌을 적어보자!", explanation: "지구는 모든 물체를 아래로 당기는데, 이 힘이 '중력'이야. 낙하하는 동안 나도, 발판도, 탑승 기구도 모두 똑같이 중력을 받아서 함께 떨어지고 있어. 이렇게 중력만 받으며 떨어지는 걸 '자유낙하'라고 해. 이 순간 발판이 내 발을 받쳐주는 힘이 사라지면서 몸이 둥둥 뜨는 것처럼 느껴지는 거야. 우주정거장도 지구를 향해 자유낙하 중이라서 우주비행사들이 무중력을 경험하는 거야.", keywords: ["중력", "자유낙하", "무중력"] },
+        { id: 5, title: "엑스플라이어", tag: "원운동과 관성", icon: "🌀", observation: "회전할 때 몸이 쏠리는 방향은?", explanation: "관성 때문에 내 몸은 원래 직선으로 쭉 나아가고 싶어 해. 그런데 줄이 나를 중심 쪽으로 잡아당기니까 어쩔 수 없이 원을 그리게 되는 거야. 이때 중심 방향으로 당기는 힘이 '구심력'이고, 빠를수록 이 힘이 더 강하게 필요해. 내 몸이 바깥으로 쏠리는 느낌은 직선으로 가려는 관성 때문이야. 회전이 빠를수록 줄이 더 기울어지는 것도 이 때문이야.", keywords: ["관성", "구심력", "원운동"] },
+        { id: 6, title: "앨리스 원더하우스", tag: "빛과 착시", icon: "🃏", observation: "눈에 보이는 것과 실제가 다른 이유는?", explanation: "눈은 빛을 받아들이는 역할만 해. 실제로 '본다'는 건 뇌가 그 정보를 해석하는 거야. 뇌는 과거 경험을 바탕으로 '이럴 거야'라고 예측해서 해석하는데, 착시 체험관은 그 예측을 의도적으로 빗나가도록 설계되어 있어. 빛이 반사되거나 굴절되는 방향을 교란시켜서 뇌가 엉뚱한 결론을 내리게 만드는 거야. 틀린 건 눈이 아니라 뇌의 해석이야.", keywords: ["빛의 반사", "착시", "시각 처리"] },
+        { id: 7, title: "쥬라기랜드", tag: "진화의 흔적", icon: "🦖", observation: "공룡이 멸종한 이유와 진화의 흔적은?", explanation: "약 6600만 년 전 소행성 충돌로 급격한 기후 변화가 일어나면서 대부분의 공룡이 멸종했어. 하지만 깃털 달린 수각류 공룡 일부가 살아남아서 오늘날의 새로 진화했어. 오랜 시간 동안 환경에 적응하며 생김새와 기능이 조금씩 변해가는 것을 '진화'라고 해. 화석은 그 진화의 흔적을 기록한 증거야. 지구에 다양한 생물이 존재하는 것 자체가 수억 년에 걸친 진화의 결과야.", keywords: ["화석", "멸종", "진화", "생물다양성"] },
+        { id: 8, title: "기상 관측가", tag: "열섬 현상", icon: "☁️", observation: "장소마다 온도가 다른 이유는?", explanation: "태양에서 오는 열은 '복사열'이라는 방식으로 전달돼. 어두운 색일수록 이 복사열을 잘 흡수하고, 밝은 색일수록 반사해. 아스팔트는 어두운 색이라 열을 많이 흡수하고, 잔디는 수분이 증발하면서 열을 식혀줘. 도시에 아스팔트와 콘크리트가 많아지면 열이 더 많이 흡수·저장되면서 도시 전체 온도가 주변보다 높아지는데, 이걸 '열섬 효과'라고 해.", keywords: ["복사열", "열흡수", "열섬 효과"] }
+    ];
+
+
+
+    // --- 클라우드 데이터베이스(Firebase) 초기화 ---
+
+    let db, auth, appId;
+
+    try {
+
+        // 실제 서비스(Netlify 등)에 올릴 때는 아래 부분을 본인의 Firebase 프로젝트 설정으로 바꿔주세요!
+
+       const firebaseConfig = {
+
+
+
+  apiKey: "AIzaSyBqe59Dh5OjerwcK87Mp_HPH8MGsON0icE",
+
+
+
+  authDomain: "seoulland-f090b.firebaseapp.com",
+
+
+
+  projectId: "seoulland-f090b",
+
+
+
+  storageBucket: "seoulland-f090b.firebasestorage.app",
+
+
+
+  messagingSenderId: "675549898278",
+
+
+
+  appId: "1:675549898278:web:d3dc82eea8688d990be8e7"
+
+
+
+};
+
+        
+
+        if (firebaseConfig && Object.keys(firebaseConfig).length > 0) {
+
+            const app = initializeApp(firebaseConfig);
+
+            auth = getAuth(app);
+
+            db = getFirestore(app);
+
+            appId = typeof __app_id !== 'undefined' ? __app_id : 'seoulland-app';
+
+            
+
+            // 로그인(인증) 처리 (DB 권한 획득)
+
+            const initAuth = async () => {
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+
+                    await signInWithCustomToken(auth, __initial_auth_token);
+
+                } else {
+
+                    await signInAnonymously(auth);
+
+                }
+
+            };
+
+            initAuth();
+
+        }
+
+    } catch(e) { console.warn("클라우드 DB 초기화 실패 (로컬 모드로 동작합니다)", e); }
+
+
+
+    // --- 2. 스토리지 유틸리티 (클라우드 DB 적용) ---
+
+    const StorageUtil = {
+
+        async set(key, value) {
+
+            try {
+
+                // 1순위: 클라우드 DB에 실시간 저장 (선생님 대시보드 연동용)
+
+                if (db && auth && auth.currentUser) {
+
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'groups', key), value);
+
+                }
+
+                // 2순위: 기기 로컬 저장 (인터넷 끊김 방지용)
+
+                localStorage.setItem(key, JSON.stringify(value));
+
+            } catch (e) {
+
+                console.error('Storage save error:', e);
+
+                localStorage.setItem(key, JSON.stringify(value));
+
+            }
+
+        },
+
+        async get(key) {
+
+            try {
+
+                if (db && auth && auth.currentUser) {
+
+                    const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'groups', key));
+
+                    if (docSnap.exists()) return docSnap.data();
+
+                }
+
+                const val = localStorage.getItem(key);
+
+                return val ? JSON.parse(val) : null;
+
+            } catch (e) {
+
+                const val = localStorage.getItem(key);
+
+                return val ? JSON.parse(val) : null;
+
+            }
+
+        }
+
+    };
+
+
+
+    // --- 3. 앱 상태 관리 ---
+
+    let appState = {
+
+        cls: "", group: "", name: "",
+
+        stamps: {}, answers: {}, revealed: {},
+
+        amuletShown: false
+
+    };
+
+    let currentMissionId = null;
+
+
+
+    // --- 4. DOM 요소 ---
+
+    const screens = {
+
+        home: document.getElementById('screen-home'),
+
+        map: document.getElementById('screen-map'),
+
+        detail: document.getElementById('screen-detail'),
+
+        amulet: document.getElementById('screen-amulet')
+
+    };
+
+
+
+    // 폼 요소
+
+    const inputs = {
+
+        cls: document.getElementById('input-cls'),
+
+        group: document.getElementById('input-group'),
+
+        name: document.getElementById('input-name')
+
+    };
+
+    const btnStart = document.getElementById('btn-start');
+
+
+
+    // 맵 요소
+
+    const mapGrid = document.getElementById('mission-grid');
+
+    const stampCountEl = document.getElementById('stamp-count');
+
+    const progressBar = document.getElementById('progress-bar');
+
+    const mapTeamInfo = document.getElementById('map-team-info');
+
+    const btnViewAmulet = document.getElementById('btn-view-amulet');
+
+
+
+    // 상세 화면 요소
+
+    const detailEls = {
+
+        title: document.getElementById('detail-title'), tag: document.getElementById('detail-tag'),
+
+        icon: document.getElementById('detail-icon'), observation: document.getElementById('detail-observation'),
+
+        question: document.getElementById('detail-question'), answer: document.getElementById('detail-answer'),
+
+        charCount: document.getElementById('char-count'), btnReveal: document.getElementById('btn-reveal'),
+
+        expBox: document.getElementById('detail-explanation-box'), expText: document.getElementById('detail-explanation'),
+
+        keywords: document.getElementById('detail-keywords'), btnStamp: document.getElementById('btn-stamp'),
+
+        completedBanner: document.getElementById('completed-banner')
+
+    };
+
+
+
+    // --- 5. 로직 구현 ---
+
+
+
+    function showScreen(screenName) {
+
+        Object.values(screens).forEach(s => s.classList.remove('active'));
+
+        screens[screenName].classList.add('active');
+
+        window.scrollTo(0,0);
+
+    }
+
+
+
+    async function saveData() {
+
+        if(!appState.cls || !appState.group) return;
+
+        const key = `group_${appState.cls.replace(/\s+/g, '_')}_${appState.group.replace(/\s+/g, '_')}`;
+
+        const dataToSave = { ...appState, updatedAt: new Date().toISOString() };
+
+        await StorageUtil.set(key, dataToSave);
+
+    }
+
+
+
+    // [홈] 입력 검증
+
+    function checkInputs() {
+
+        const isValid = inputs.cls.value && inputs.group.value.trim() && inputs.name.value.trim();
+
+        if (isValid) {
+
+            btnStart.classList.remove('opacity-50', 'cursor-not-allowed', 'translate-y-1');
+
+            btnStart.classList.add('hover:-translate-y-1', 'active:translate-y-1', 'active:shadow-none');
+
+            btnStart.removeAttribute('disabled');
+
+        } else {
+
+            btnStart.classList.add('opacity-50', 'cursor-not-allowed');
+
+            btnStart.classList.remove('hover:-translate-y-1', 'active:translate-y-1', 'active:shadow-none');
+
+            btnStart.setAttribute('disabled', 'true');
+
+        }
+
+    }
+
+    Object.values(inputs).forEach(input => input.addEventListener('input', checkInputs));
+
+    inputs.cls.addEventListener('change', checkInputs); // select change event
+
+
+
+    // [홈] 시작 버튼 클릭
+
+    btnStart.addEventListener('click', async () => {
+
+        const cls = inputs.cls.value.trim();
+
+        const group = inputs.group.value.trim();
+
+        const name = inputs.name.value.trim();
+
+        const key = `group_${cls.replace(/\s+/g, '_')}_${group.replace(/\s+/g, '_')}`;
+
+
+
+        btnStart.textContent = "불러오는 중... ⏳";
+
+        const existingData = await StorageUtil.get(key);
+
+        
+
+        if (existingData) {
+
+            alert('기존 탐험 기록을 찾았어! 이어서 탐험하자! 🎢');
+
+            appState = existingData;
+
+            if(!appState.answers) appState.answers = {};
+
+            if(!appState.revealed) appState.revealed = {};
+
+            // 방어코드: 5개 미만인데 true로 저장되어 있다면 false로 리셋
+
+            const count = Object.keys(appState.stamps || {}).length;
+
+            if (count < 5) appState.amuletShown = false; 
+
+        } else {
+
+            appState.cls = cls; appState.group = group; appState.name = name;
+
+            appState.stamps = {}; appState.answers = {}; appState.revealed = {}; appState.amuletShown = false;
+
+        }
+
+
+
+        renderMap();
+
+        showScreen('map');
+
+        btnStart.textContent = "탐험 시작하기! 🚀";
+
+    });
+
+
+
+    // [맵] 렌더링
+
+    function renderMap() {
+
+        mapTeamInfo.textContent = `${appState.cls} | ${appState.group}`;
+
+        const stampsCount = Object.keys(appState.stamps).length;
+
+        stampCountEl.textContent = stampsCount;
+
+        progressBar.style.width = `${(stampsCount / 9) * 100}%`;
+
+
+
+        // ★ 도장 개수가 정확히 5개 이상일 때만 부적 보기 버튼 활성화
+
+        if (stampsCount >= 5) {
+
+            btnViewAmulet.classList.remove('hidden');
+
+        } else {
+
+            btnViewAmulet.classList.add('hidden');
+
+        }
+
+
+
+        mapGrid.innerHTML = '';
+
+        MISSIONS.forEach(mission => {
+
+            const isDone = appState.stamps[mission.id];
+
+            const btn = document.createElement('button');
+
+            btn.className = `aspect-square rounded-2xl p-2 flex flex-col items-center justify-center text-center card-pop border-2 transition-all relative overflow-hidden ${
+
+                isDone 
+
+                ? 'bg-rose-50 border-rose-300 text-rose-900 shadow-inner' 
+
+                : 'bg-white border-slate-200 text-slate-700 shadow-md hover:border-rose-300'
+
+            }`;
+
+            
+
+            btn.innerHTML = `
+
+                <div class="text-4xl mb-1">${mission.icon}</div>
+
+                <div class="font-jua text-sm leading-tight break-keep-all mt-1">${mission.title}</div>
+
+                ${isDone ? `<div class="absolute inset-0 bg-rose-500/10 flex items-center justify-center backdrop-blur-[1.5px]"><span class="text-6xl drop-shadow-lg filter blur-[0.5px]">🔖</span></div>` : ''}
+
+            `;
+
+            btn.onclick = () => openMission(mission.id);
+
+            mapGrid.appendChild(btn);
+
+        });
+
+    }
+
+
+
+    // [상세] 미션 열기
+
+    function openMission(id) {
+
+        currentMissionId = id;
+
+        const mission = MISSIONS.find(m => m.id === id);
+
+        const isDone = appState.stamps[id];
+
+        const hasRevealed = appState.revealed[id];
+
+        const savedAnswer = appState.answers[id] || "";
+
+
+
+        detailEls.title.textContent = mission.title;
+
+        detailEls.tag.textContent = mission.tag;
+
+        detailEls.icon.textContent = mission.icon;
+
+        detailEls.observation.textContent = mission.observation;
+
+        detailEls.question.textContent = mission.question;
+
+        detailEls.answer.placeholder = mission.hint;
+
+        detailEls.answer.value = savedAnswer;
+
+        detailEls.expText.textContent = mission.explanation;
+
+        
+
+        detailEls.keywords.innerHTML = mission.keywords.map(kw => 
+
+            `<span class="px-3 py-1.5 bg-white round
