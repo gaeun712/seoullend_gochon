@@ -1050,16 +1050,25 @@
 
         detailEls.observation.textContent = mission.observation;
 
-        detailEls.question.textContent = mission.question;
-
-        detailEls.answer.placeholder = mission.hint;
-
         detailEls.answer.value = savedAnswer;
 
         detailEls.expText.textContent = mission.explanation;
 
         
 
-        detailEls.keywords.innerHTML = mission.keywords.map(kw => 
+       detailEls.keywords.innerHTML = mission.keywords.map(kw =>
+    `<span class="px-3 py-1.5 bg-white rounded-full text-sm font-bold text-indigo-600 border border-indigo-200">
+        #${kw}
+    </span>`
+).join('');
+        detailEls.expBox.classList.toggle('hidden', !hasRevealed);
 
-            `<span class="px-3 py-1.5 bg-white round
+detailEls.completedBanner.classList.toggle('hidden', !isDone);
+
+updateAnswerState();
+
+showScreen('detail');
+}
+    </script>
+</body>
+</html>
